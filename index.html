@@ -3,28 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>胶片分镜条核对台</title>
+    <title>胶片分镜条酸损隔离台</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="eyebrow">纸质放映胶片整理</p>
-          <h1>胶片分镜条核对台</h1>
+          <p class="eyebrow">纸质放映胶片整理 · 醋酸片基</p>
+          <h1>胶片分镜条酸损隔离台</h1>
         </div>
         <div class="hero-stats">
           <div>
-            <span>总时长</span>
+            <span>试映总时长</span>
             <strong id="totalDuration">0:00</strong>
           </div>
           <div>
-            <span>破损片段</span>
-            <strong id="damageCount">0</strong>
+            <span>正常 A</span>
+            <strong id="gradeACount">0</strong>
           </div>
           <div>
-            <span>片段数</span>
-            <strong id="segmentCount">0</strong>
+            <span>观察 B</span>
+            <strong id="gradeBCount">0</strong>
+          </div>
+          <div>
+            <span>隔离 C/D</span>
+            <strong id="gradeCDCount">0</strong>
           </div>
         </div>
       </header>
@@ -49,7 +53,7 @@
           搜索
           <input id="searchInput" type="search" placeholder="片段编号或备注" />
         </label>
-        <button id="exportBtn">导出清单</button>
+        <button id="exportBtn">导出清单与留档</button>
       </section>
 
       <section class="layout">
@@ -84,22 +88,46 @@
                 <option value="需跳过">需跳过</option>
               </select>
             </label>
+            <div class="acid-grid">
+              <label>
+                试纸等级
+                <select id="gradeInput">
+                  <option value="A">A 正常</option>
+                  <option value="B">B 观察</option>
+                  <option value="C">C 隔离</option>
+                  <option value="D">D 隔离</option>
+                </select>
+              </label>
+              <label>
+                收缩率 %
+                <input id="shrinkInput" type="number" step="0.1" min="0" placeholder="如 0.8" />
+              </label>
+              <label>
+                湿度 %
+                <input id="humidityInput" required type="number" step="0.1" min="0" max="100" placeholder="如 55" />
+              </label>
+            </div>
+            <p class="rule-hint">A 正常 · B 观察 · C/D 隔离；湿度 &gt;65% 至少观察，&gt;75% 直接隔离。</p>
+            <label>
+              检测库员
+              <input id="inspectorInput" type="text" required placeholder="本次检测人姓名" />
+            </label>
             <label>
               缩略图
               <input id="thumbInput" type="file" accept="image/*" />
             </label>
             <label>
               备注
-              <textarea id="noteInput" rows="4" placeholder="试映前要留意的画面、接片或声音点"></textarea>
+              <textarea id="noteInput" rows="3" placeholder="酸味、画面、接片或声音点"></textarea>
             </label>
-            <button class="primary" type="submit">加入放映清单</button>
+            <button class="primary" type="submit">加入清单</button>
           </form>
         </aside>
 
         <section class="panel list-panel">
           <div class="panel-head">
-            <h2>放映顺序</h2>
-            <span>拖拽片段调整顺序</span>
+            <h2>试映顺序</h2>
+            <span>隔离段不在此列，拖拽调整顺序</span>
           </div>
           <div id="segmentList" class="segment-list"></div>
         </section>
@@ -109,8 +137,24 @@
           <div id="warningList" class="warning-list"></div>
         </aside>
       </section>
+
+      <section class="panel isolation-panel">
+        <div class="panel-head">
+          <h2>酸损隔离台</h2>
+          <span>C/D 或湿度 &gt;75% 自动退出试映；通风复检达标后由另一名库员确认恢复</span>
+        </div>
+        <div id="isolationList" class="isolation-list"></div>
+        <div class="log-block">
+          <div class="panel-head">
+            <h3>处置留档</h3>
+            <span>最新 4 条，完整记录见导出</span>
+          </div>
+          <div id="logList" class="log-list"></div>
+        </div>
+      </section>
     </main>
 
+    <script src="archive.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

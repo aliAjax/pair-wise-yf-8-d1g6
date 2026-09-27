@@ -115,7 +115,7 @@ h2 {
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  grid-template-columns: repeat(4, minmax(100px, 1fr));
   gap: 10px;
 }
 
@@ -320,6 +320,223 @@ label {
   line-height: 1.5;
 }
 
+/* 酸损检测表单 */
+.acid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.acid-grid label:first-child {
+  grid-column: 1 / -1;
+}
+
+.rule-hint {
+  margin: 0;
+  border-radius: 6px;
+  background: rgba(212, 155, 53, 0.14);
+  color: #8a5f14;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 10px;
+}
+
+/* 最新等级徽标 */
+.grade-badge {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.grade-a {
+  background: rgba(77, 118, 86, 0.16);
+  color: var(--green);
+}
+
+.grade-b {
+  background: rgba(212, 155, 53, 0.2);
+  color: #8a5f14;
+}
+
+.grade-c,
+.grade-d {
+  background: rgba(181, 77, 72, 0.16);
+  color: var(--red);
+}
+
+.grade-none {
+  background: rgba(105, 113, 121, 0.16);
+  color: var(--muted);
+}
+
+.readings {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.recheck-inline {
+  margin-top: 8px;
+}
+
+.recheck-inline summary {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* 卡片内的检测 / 复检表单 */
+.check-form {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  margin-top: 8px;
+}
+
+.check-form input,
+.check-form select {
+  padding: 7px 8px;
+  font-size: 13px;
+}
+
+.check-form button {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+/* 酸损隔离台 */
+.isolation-panel {
+  margin-top: 16px;
+  border-color: rgba(181, 77, 72, 0.45);
+}
+
+.isolation-list {
+  display: grid;
+  gap: 12px;
+}
+
+.isolation-card {
+  border: 1px solid rgba(181, 77, 72, 0.35);
+  border-radius: 8px;
+  background: rgba(181, 77, 72, 0.05);
+  padding: 12px;
+}
+
+.isolation-head {
+  display: grid;
+  grid-template-columns: 112px 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.isolation-head .thumb {
+  aspect-ratio: 1.45;
+}
+
+.isolation-status {
+  margin: 0 0 6px;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.isolation-work {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(181, 77, 72, 0.35);
+}
+
+.isolation-work h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.restore-form {
+  display: grid;
+  gap: 8px;
+}
+
+.restore-form button {
+  justify-self: start;
+}
+
+.restore-hint,
+.restore-locked {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.restore-error {
+  margin: 0;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* 处置留档 */
+.log-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.log-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.log-entry {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 2px 10px;
+  align-items: baseline;
+}
+
+.log-type {
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+  background: rgba(105, 113, 121, 0.16);
+  color: var(--muted);
+}
+
+.log-type.log-隔离,
+.log-type.log-恢复放映 {
+  background: rgba(181, 77, 72, 0.16);
+  color: var(--red);
+}
+
+.log-type.log-恢复放映 {
+  background: rgba(77, 118, 86, 0.16);
+  color: var(--green);
+}
+
+.log-meta {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.log-entry p {
+  grid-column: 2;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 @media (max-width: 1120px) {
   .hero {
     align-items: stretch;
@@ -351,5 +568,23 @@ label {
 
   .segment-actions button {
     width: 100%;
+  }
+
+  .isolation-head {
+    grid-template-columns: 1fr;
+  }
+
+  .isolation-work {
+    grid-template-columns: 1fr;
+  }
+
+  .check-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .check-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
