@@ -3,27 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>胶片分镜条核对台</title>
+    <title>胶片酸损隔离台</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="shell">
       <header class="hero">
         <div>
-          <p class="eyebrow">纸质放映胶片整理</p>
-          <h1>胶片分镜条核对台</h1>
+          <p class="eyebrow">醋酸综合征防控 · 试纸 / 收缩率 / 湿度同段记录</p>
+          <h1>胶片酸损隔离台</h1>
         </div>
         <div class="hero-stats">
           <div>
-            <span>总时长</span>
+            <span>放映总时长</span>
             <strong id="totalDuration">0:00</strong>
           </div>
           <div>
-            <span>破损片段</span>
-            <strong id="damageCount">0</strong>
+            <span>正常 A</span>
+            <strong id="countA">0</strong>
           </div>
           <div>
-            <span>片段数</span>
+            <span>观察 B</span>
+            <strong id="countB">0</strong>
+          </div>
+          <div>
+            <span>隔离 C·D</span>
+            <strong id="countIsolated">0</strong>
+          </div>
+          <div>
+            <span>片段总数</span>
             <strong id="segmentCount">0</strong>
           </div>
         </div>
@@ -46,15 +54,25 @@
           </select>
         </label>
         <label>
+          最新等级
+          <select id="gradeFilter">
+            <option value="all">全部</option>
+            <option value="A">A 正常</option>
+            <option value="B">B 观察</option>
+            <option value="CD">C·D 隔离</option>
+            <option value="none">待检测</option>
+          </select>
+        </label>
+        <label>
           搜索
-          <input id="searchInput" type="search" placeholder="片段编号或备注" />
+          <input id="searchInput" type="search" placeholder="片段编号、备注或库员" />
         </label>
         <button id="exportBtn">导出清单</button>
       </section>
 
       <section class="layout">
         <aside class="panel">
-          <h2>录入片段</h2>
+          <h2>录入检测</h2>
           <form id="segmentForm" class="segment-form">
             <label>
               片段编号
@@ -84,32 +102,124 @@
                 <option value="需跳过">需跳过</option>
               </select>
             </label>
+            <div class="form-grid">
+              <label>
+                试纸等级
+                <select id="paperInput">
+                  <option value="A">A 正常</option>
+                  <option value="B">B 观察</option>
+                  <option value="C">C 隔离</option>
+                  <option value="D">D 隔离</option>
+                </select>
+              </label>
+              <label>
+                收缩率 %
+                <input id="shrinkageInput" type="number" min="0" step="0.01" value="0.50" required />
+              </label>
+              <label>
+                湿度 %
+                <input id="humidityInput" type="number" min="0" max="100" step="1" value="50" required />
+              </label>
+            </div>
+            <p class="rule-hint">A 正常 ｜ B 观察 ｜ C、D 隔离；湿度 &gt;65% 至少观察，&gt;75% 直接隔离。</p>
+            <label>
+              检测库员
+              <input id="inspectorInput" required placeholder="姓名或工号" />
+            </label>
             <label>
               缩略图
               <input id="thumbInput" type="file" accept="image/*" />
             </label>
             <label>
               备注
-              <textarea id="noteInput" rows="4" placeholder="试映前要留意的画面、接片或声音点"></textarea>
+              <textarea id="noteInput" rows="3" placeholder="酸味、通风位置、试映留意点等"></textarea>
             </label>
-            <button class="primary" type="submit">加入放映清单</button>
+            <button class="primary" type="submit">录入并判定等级</button>
           </form>
         </aside>
 
         <section class="panel list-panel">
           <div class="panel-head">
-            <h2>放映顺序</h2>
-            <span>拖拽片段调整顺序</span>
+            <h2>试映顺序</h2>
+            <span>隔离段已自动退出，拖拽调整顺序</span>
           </div>
           <div id="segmentList" class="segment-list"></div>
         </section>
 
-        <aside class="panel warning-panel">
-          <h2>试映前核对</h2>
-          <div id="warningList" class="warning-list"></div>
-        </aside>
+        <div class="side-column">
+          <aside class="panel isolation-panel">
+            <div class="panel-head">
+              <h2>酸损隔离区</h2>
+              <span id="isolationCount">0 段</span>
+            </div>
+            <div id="isolationList" class="isolation-list"></div>
+          </aside>
+
+          <aside class="panel warning-panel">
+            <h2>观察名单（B）</h2>
+            <div id="warningList" class="warning-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="panel archive-panel">
+        <div class="panel-head">
+          <div>
+            <h2>处置留档</h2>
+            <span>隔离、复检与恢复记录独立存档，不随页面清单改动</span>
+          </div>
+          <div class="archive-actions">
+            <button id="exportArchiveBtn">导出留档</button>
+            <button id="clearArchiveBtn" class="danger-btn">清空留档</button>
+          </div>
+        </div>
+        <div id="archiveList" class="archive-list"></div>
       </section>
     </main>
+
+    <div id="recheckModal" class="modal-backdrop" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recheckTitle">
+        <h2 id="recheckTitle">通风复检</h2>
+        <p class="modal-hint">
+          复检段：<strong id="recheckCode"></strong>。通风后试纸等级降到 <strong>B</strong>（含 A）、湿度
+          <strong>≤65%</strong>，并由<strong>另一名库员</strong>确认，方可恢复试映。
+        </p>
+        <form id="recheckForm" class="segment-form">
+          <div class="form-grid">
+            <label>
+              试纸等级
+              <select id="recheckPaper">
+                <option value="A">A 正常</option>
+                <option value="B" selected>B 观察</option>
+                <option value="C">C 隔离</option>
+                <option value="D">D 隔离</option>
+              </select>
+            </label>
+            <label>
+              收缩率 %
+              <input id="recheckShrinkage" type="number" min="0" step="0.01" value="0.50" required />
+            </label>
+            <label>
+              湿度 %
+              <input id="recheckHumidity" type="number" min="0" max="100" step="1" value="60" required />
+            </label>
+          </div>
+          <label>
+            复检库员
+            <input id="recheckInspector" required placeholder="执行通风复检的库员" />
+          </label>
+          <label>
+            确认库员（须为另一名库员）
+            <input id="recheckConfirmer" required placeholder="复核确认的另一名库员" />
+          </label>
+          <p id="recheckError" class="form-error" hidden></p>
+          <div class="modal-actions">
+            <button type="button" id="recheckCancel">取消</button>
+            <button class="primary" type="submit">复检合格，恢复试映</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <script src="app.js"></script>
   </body>
